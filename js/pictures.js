@@ -3,7 +3,12 @@
 var LIKES_MIN = 15;
 var LIKES_MAX = 200;
 var NUMBERS = createNumbersArray(1, 25);
-var COMMENTS = ['Всё отлично!', 'В целом всё неплохо. Но не всё.', 'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.', 'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.', 'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.', 'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'];
+var COMMENTS = ['Всё отлично!',
+  'В целом всё неплохо. Но не всё.',
+  'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.',
+  'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.',
+  'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
+  'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'];
 var PHOTO_LENGTH = 25;
 
 var photo = [];
@@ -19,8 +24,8 @@ var mainPictureComments = mainPicture.querySelector('.comments-count');
 
 // заполняем массив объектами, заполняем фрагмент шаблонами
 for (var i = 0; i < PHOTO_LENGTH; i++) {
-  photo[i] = createPhotoObject(copyNumbers, copyComments);
-  fragmentElement.appendChild(createPictureElement(pictureElement, photo[i]));
+  photo[i] = createPhotoObject();
+  fragmentElement.appendChild(createPictureElement(photo[i]));
 }
 // добавляем фрагмент в основной блок
 pictures.appendChild(fragmentElement);
@@ -69,23 +74,21 @@ function getRandomElement(arr) {
 /**
  * createPhotoObject - создает объект, заполненный данными из массивов
  *
- * @param  {Array} numbersArr массив чисел
- * @param  {Array} stringsArr массив строк
  * @return {Object} объект с данными из массивов
  */
-function createPhotoObject(numbersArr, stringsArr) {
+function createPhotoObject() {
   var obj = {};
-  var index = getRandomNumber(0, stringsArr.length);
-  var secondIndex = getRandomNumber(0, stringsArr.length);
+  var index = getRandomNumber(0, copyComments.length);
+  var secondIndex = getRandomNumber(0, copyComments.length);
   while (secondIndex === index) {
-    secondIndex = getRandomNumber(0, stringsArr.length);
+    secondIndex = getRandomNumber(0, copyComments.length);
   }
-  obj.url = 'photos/' + getRandomElement(numbersArr) + '.jpg';
+  obj.url = 'photos/' + getRandomElement(copyNumbers) + '.jpg';
   obj.likes = getRandomNumber(LIKES_MIN, LIKES_MAX);
   if (getRandomNumber(1, 3) > 1) {
-    obj.comments = [stringsArr[index], stringsArr[secondIndex]];
+    obj.comments = [copyComments[index], copyComments[secondIndex]];
   } else {
-    obj.comments = [stringsArr[getRandomNumber(0, stringsArr.length)]];
+    obj.comments = [copyComments[getRandomNumber(0, copyComments.length)]];
   }
   return obj;
 }
@@ -128,12 +131,11 @@ function fillElementAttributes(img, likes, comments, obj) {
 /**
  * createPictureElement - создает копию элемента по шаблону
  *
- * @param  {Object} template шаблон
  * @param  {Object} obj объект со значениями свойств элемента
  * @return {Object} копия элемента
  */
-function createPictureElement(template, obj) {
-  var cloneElement = template.cloneNode(true);
+function createPictureElement(obj) {
+  var cloneElement = pictureElement.cloneNode(true);
   var cloneElementImage = cloneElement.querySelector('a img');
   var cloneElementLikes = cloneElement.querySelector('.picture-likes');
   var cloneElementComments = cloneElement.querySelector('.picture-comments');
