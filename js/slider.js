@@ -16,25 +16,13 @@
   // задаем обработчики dran'n'drop на бегунок
   pin.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
-    // получаем координаты ограничения движения бегунка с его родительского элемента
-    var rect = scaleLine.getBoundingClientRect();
-    var minX = rect.left;
-    var maxX = rect.right;
 
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
 
     function onMouseMove(moveEvt) {
       moveEvt.preventDefault();
-      // задаем место положение мыши в координату x
-      var coordinateX = moveEvt.clientX;
-      // если она меньше/больше заданного диапазона - устанавливаем ей мин/макс значение
-      coordinateX = coordinateX < minX ? minX : coordinateX;
-      coordinateX = coordinateX > maxX ? maxX : coordinateX;
-      // получаем значение координаты x в процентах относительно родительского блока
-      var percent = parseInt((coordinateX - minX) * 100 / (maxX - minX), 10);
-      // передаем значение в функцию
-      setAttributes(percent, changeFilter);
+      setAttributes(getCoordinateValue(moveEvt.clientX), changeFilter);
     }
 
     function onMouseUp(upEvt) {
@@ -43,6 +31,30 @@
       document.removeEventListener('mouseup', onMouseUp);
     }
   });
+  // по клику на шкалу тоже двигаем пин
+  scale.addEventListener('click', function (evt) {
+    setAttributes(getCoordinateValue(evt.clientX), changeFilter);
+  });
+
+  /**
+   * getCoordinateValue - считает значение полученной координаты в процентах относительно родительского блока
+   *
+   * @param {number} userCoordinate
+   * @return {number} значение координаты
+   */
+  function getCoordinateValue(userCoordinate) {
+    // получаем координаты ограничения движения бегунка с его родительского элемента
+    var rect = scaleLine.getBoundingClientRect();
+    var minX = rect.left;
+    var maxX = rect.right;
+    // если координата меньше/больше заданного диапазона - устанавливаем ей мин/макс значение
+    userCoordinate = userCoordinate < minX ? minX : userCoordinate;
+    userCoordinate = userCoordinate > maxX ? maxX : userCoordinate;
+    // получаем значение координаты x в процентах относительно родительского блока
+    var percent = parseInt((userCoordinate - minX) * 100 / (maxX - minX), 10);
+    return percent;
+  }
+
 
   /**
    * setAttributes - устанавливает получаемое значение в атрибуты элементов и передает его в колбек
