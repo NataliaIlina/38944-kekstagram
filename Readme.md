@@ -1,7 +1,6 @@
 # Личный проект «Кекстаграм» [![Build status][travis-image]][travis-url]
 
 * Студент: [Наталья Ильина](https://up.htmlacademy.ru/javascript/11/user/38944).
-* Наставник: `Неизвестно`.
 
 ---
 
